@@ -5,14 +5,16 @@
         [showRefreshButton]="false"
         [showCompleteButton]="false"
         (executeOutcome)="onContractSaved($event)">
-        <adf-form-custom-outcomes *ngIf="!isHiddenUpload" class="float-start">
+        <adf-form-custom-outcomes class="float-end">
             <adf-upload-button
-                staticTitle="Upload Attachments"
+                *ngIf="!isHiddenUpload"
+                staticTitle="Upload"
                 [rootFolderId]="contractNodeId"
                 [multipleFiles]="true"
-                [acceptedFilesType]="'.doc,.docx,.pdf'"
-                (success)="onUploadSuccess($event)"></adf-upload-button>
+                acceptedFilesType=".doc,.docx,.pdf"></adf-upload-button>
             <adf-file-uploading-dialog></adf-file-uploading-dialog>
+
+            <button mat-button (click)="this.dialogRef.close(this.contractNode)">Close</button>
         </adf-form-custom-outcomes>
     </adf-form>
 </div>

@@ -83,10 +83,10 @@ export class ContractHomeComponent implements OnInit {
 
   onNewContract(): void {
     this.dialog.open(ContractNewDialogComponent, {
-      width: '600px'
+      width: '600px',
+      disableClose: true
     }).afterClosed().subscribe((entry: MinimalNode) => {
-      if (entry) {
-      }
+      if (entry) this.onSearch()
     })
   }
 

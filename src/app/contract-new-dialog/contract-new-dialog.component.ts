@@ -16,7 +16,7 @@ export class ContractNewDialogComponent implements OnInit {
   isHiddenUpload: boolean = true
 
   contractNodeId: string
-  contractNode: MinimalNode
+  contractNode: MinimalNode = null
 
   constructor(private authService: AuthenticationService,
     private nodeApiService: NodesApiService,
@@ -48,17 +48,12 @@ export class ContractNewDialogComponent implements OnInit {
               item.updateForm()
             })
           }, (error: any) => { console.log(error) }, () => {
-            this.notificationService.showInfo("New contract folder was successfully created.\nPlease upload the attachments.", "Notice!")
+            this.notificationService.showInfo("New contract folder was successfully created.\r\nPlease upload the attachments.", "Notice!")
           })
         }
 
         event.preventDefault()
       }
     }
-  }
-
-  onUploadSuccess(event: any) {
-    this.dialogRef.close(this.contractNode)
-    this.notificationService.showInfo("Uploading was successfully finished.", "Notice!")
   }
 }
