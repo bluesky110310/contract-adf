@@ -12,11 +12,7 @@ import { SearchService } from '@alfresco/adf-core';
   encapsulation: ViewEncapsulation.None
 })
 export class ContractHomeComponent implements OnInit {
-  approvals = [
-    { name: 'New York Road Company Contract' },
-    { name: 'ABC LLC Enhancement Contract' },
-    { name: 'Smith Construction Upgrade' }
-  ]
+  approvals = []
 
   recents = [
     { name: 'CA Road Company Contract' },
@@ -24,6 +20,7 @@ export class ContractHomeComponent implements OnInit {
     { name: 'Kleen Construction Upgrade' }
   ]
 
+  isLoadingApproval: boolean = false
   isLoading: boolean = false
 
   defaultQueryBody: QueryBody = {
@@ -79,7 +76,26 @@ export class ContractHomeComponent implements OnInit {
     this.onSearch()
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.isLoadingApproval = true
+
+    let queryBody: QueryBody = this.defaultQueryBody
+    queryBody.paging.maxItems = 3
+
+    this.searchService.searchByQueryBody(queryBody).subscribe((rec: ResultSetPaging) => {
+      let entries = rec.list.entries
+
+      for (let i = 0; i < entries.length; i++) {
+        const entry: ResultNode = entries[i].entry
+        this.approvals.push({
+          id: entry.id,
+          name: entry.name,
+        })
+      }
+    }, (error: any) => { console.log(error) }, () => {
+      this.isLoadingApproval = false
+    })
+  }
 
   onNewContract(): void {
     this.dialog.open(ContractNewDialogComponent, {

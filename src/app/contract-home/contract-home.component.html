@@ -11,12 +11,19 @@
         <mat-card class="card">
             <mat-card-title>
                 <h4>My Pending Approvals</h4>
+                <hr class="mb-0" />
             </mat-card-title>
             <mat-card-content>
+                <div *ngIf="isLoadingApproval" class="text-md-center">
+                    <!--Add your custom loading template here-->
+                    <div class="spinner-grow text-primary m-3"></div>
+                    <div class="spinner-grow text-success m-3"></div>
+                    <div class="spinner-grow text-info m-3"></div>
+                </div>
                 <mat-list>
                     <mat-list-item *ngFor="let approval of approvals">
                         <mat-icon matListIcon>folder</mat-icon>
-                        <a href="#"><h4 matLine> {{approval.name}} </h4></a>
+                        <a href="contract/{{approval.id}}/detail"><h4 matLine> {{approval.name}} </h4></a>
                     </mat-list-item>
                 </mat-list>
             </mat-card-content>
