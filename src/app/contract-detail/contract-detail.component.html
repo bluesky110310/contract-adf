@@ -1,1 +1,122 @@
-<p>contract-detail works!</p>
+<adf-toolbar>
+    <adf-toolbar-title>
+        <adf-breadcrumb
+          class="files-breadcrumb"
+          root="Contract Detail">
+        </adf-breadcrumb>
+    </adf-toolbar-title>
+
+    <div class="adf-toolbar--spacer"></div>
+
+    <button mat-button class="float-end" (click)="onBack()">
+        <mat-icon>backspace</mat-icon> 
+        <span> Back</span>
+    </button>
+</adf-toolbar>
+
+<div class="row m-3" *ngIf="!isLoading;else loadingDiv">
+    <h2 class="font-weight-bold m-3">{{contract.name}}</h2>
+    <div class="col-md-12">
+        <div class="card m-3">
+            <div class="card-body">
+                <div class="row m-3">
+                    <h4 class="font-weight-bold">Information:</h4>
+                    <mat-divider></mat-divider>
+                </div>
+                <div class="row m-3">
+                    <div class="col-md-4">
+                        Created By: <b>{{contract.createdByUser.displayName}}</b>
+                    </div>
+                    <div class="col-md-4">
+                        Created On: <b>{{contract.createdAt.toString().substring(0, 15)}}</b>
+                    </div>
+                    <div class="col-md-4">
+                        Modified By: <b>{{contract.modifiedByUser.displayName}}</b>
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col-md-4">
+                        Status: 
+                    </div>
+                    <div class="col-md-4">
+                        Workflow Status: 
+                    </div>
+                    <div class="col-md-4">
+                        Current Workflow Step: 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card m-3">
+            <div class="card-body">
+                <div class="row m-3">
+                    <div>
+                        <h4 class="d-md-inline-block font-weight-bold">Files:</h4>
+                        <button mat-button class="float-end">
+                            <mat-icon>delete</mat-icon>
+                            <span>Delete</span>
+                        </button>
+                        <adf-upload-button
+                            class="d-md-inline-block float-end"
+                            staticTitle="Add"
+                            [rootFolderId]="contract.id"
+                            [multipleFiles]="true"
+                            [versioning]="true"
+                            acceptedFilesType=".doc,.docx,.pdf"
+                            adf-check-allowable-operation="create"
+                            (success)="uploadSuccess()">
+                        </adf-upload-button>
+                    </div>
+                    <mat-divider></mat-divider>
+                </div>
+                <div class="row m-3">
+                    <adf-document-list
+                        #documentList
+                        [currentFolderId]="contract.id"
+                        [multiselect]="true"
+                        (preview)="showPreview($event)"
+                        class="p-0">
+                    </adf-document-list>
+                    <adf-pagination
+                        [target]="documentList"
+                        [supportedPageSizes]="[5, 10, 15, 20]"
+                        [pagination]="10">
+                    </adf-pagination>
+                </div>
+            </div>
+        </div>
+        <div class="card m-3">
+            <div class="card-body">
+                <div class="row m-3">
+                    <h4 class="font-weight-bold">Comments:</h4>
+                    <mat-divider></mat-divider>
+                </div>
+                <div class="row m-3">
+                </div>
+            </div>
+        </div>
+        <div class="card m-3">
+            <div class="card-body">
+                <div class="row m-3">
+                    <h4 class="font-weight-bold">Audit Histories:</h4>
+                    <mat-divider></mat-divider>
+                </div>
+                <div class="row m-3">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #loadingDiv>
+    <div class="d-md-flex text-md-center align-items-md-center h-100">
+        <div class="col-md-12">
+            <div class="spinner-grow text-primary m-3"></div>
+            <div class="spinner-grow text-success m-3"></div>
+            <div class="spinner-grow text-info m-3"></div>
+        </div>
+    </div>
+</ng-template>
+
+<adf-file-uploading-dialog></adf-file-uploading-dialog>
