@@ -27,8 +27,8 @@ export class ContractHomeComponent implements OnInit {
 
   sizes: Array<number> = [5, 10]
 
-  isLoadingApproval: boolean = false
-  isLoading: boolean = false
+  isLoadingApproval: boolean = true
+  isLoading: boolean = true
 
   defaultQueryBody: QueryBody = {
     query: {
@@ -95,7 +95,10 @@ export class ContractHomeComponent implements OnInit {
           name: entry.name,
         })
       }
-    }, (error: any) => { console.log(error) }, () => {
+    }, (error: any) => {
+      console.log(error)
+      this.isLoadingApproval = false
+    }, () => {
       this.isLoadingApproval = false
     })
   }
@@ -114,7 +117,10 @@ export class ContractHomeComponent implements OnInit {
 
     this.isLoading = true
 
-    let queryBody: QueryBody = { ...this.defaultQueryBody, paging: { ...this.pagination } }
+    let queryBody: QueryBody = { ...this.defaultQueryBody, paging: {
+      maxItems: this.pagination.maxItems,
+      skipCount: this.pagination.skipCount
+    } }
 
     this.searchService.searchByQueryBody(queryBody).subscribe((rec: ResultSetPaging) => {
       this.pagination = rec.list.pagination
@@ -132,10 +138,11 @@ export class ContractHomeComponent implements OnInit {
           last_mod_on: entry.modifiedAt
         })
       }
-    }, (error: any) => { console.log(error) }, () => {
+    }, (error: any) => {
+      console.log(error)
       this.isLoading = false
-
-      this.defaultQueryBody.paging = this.pagination
+    }, () => {
+      this.isLoading = false
     })
   }
 
@@ -143,8 +150,6 @@ export class ContractHomeComponent implements OnInit {
     const { id } = event.value.obj
 
     this.router.navigate(['contract', id, 'detail'])
-    
-    // this.router.navigate(['/contract', id, 'detail']);
   }
 
   onChangePagination(event: PaginationModel) {
