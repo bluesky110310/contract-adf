@@ -23,7 +23,9 @@
                 <mat-list>
                     <mat-list-item *ngFor="let approval of approvals">
                         <mat-icon matListIcon>folder</mat-icon>
-                        <a href="contract/{{approval.id}}/detail"><h4 matLine> {{approval.name}} </h4></a>
+                        <a href="contract/{{approval.id}}/detail">
+                            <h4 matLine> {{approval.name}} </h4>
+                        </a>
                     </mat-list-item>
                 </mat-list>
             </mat-card-content>
@@ -38,7 +40,9 @@
                 <mat-list>
                     <mat-list-item *ngFor="let recent of recents">
                         <mat-icon matListIcon>folder</mat-icon>
-                        <a href="#"><h4 matLine> {{recent.name}} </h4></a>
+                        <a href="#">
+                            <h4 matLine> {{recent.name}} </h4>
+                        </a>
                     </mat-list-item>
                 </mat-list>
             </mat-card-content>
@@ -48,15 +52,13 @@
 
 <div class="row m-3">
     <div class="offset-md-1 col-md-10">
-        <mat-card class="card">
+        <mat-card class="card mb-3">
             <mat-card-title>
                 <h4>All Contracts</h4>
             </mat-card-title>
             <mat-card-content>
-                <adf-datatable
-                    [rows]="rows"
-                    [columns]="schema"
-                    [loading]="isLoading">
+                <adf-datatable [rows]="rows" [columns]="schema" [loading]="isLoading"
+                    [stickyHeader]="false" (rowDblClick)="onShowDetail($event)">
 
                     <adf-loading-content-template>
                         <ng-template>
@@ -69,20 +71,16 @@
 
                     <adf-no-content-template>
                         <ng-template>
-                            <adf-empty-content class="m-3"
-                                icon="star_rate"
-                                title="No Contracts">
+                            <adf-empty-content class="m-3" icon="star_rate" title="No Contracts">
                             </adf-empty-content>
                         </ng-template>
                     </adf-no-content-template>
 
                 </adf-datatable>
 
-                <!-- <adf-pagination
-                    [target]="contractList"
-                    [supportedPageSizes]="[5, 10, 15, 20]"
-                    [pagination]="10">
-                </adf-pagination> -->
+                <adf-pagination [supportedPageSizes]="sizes" [pagination]="pagination"
+                    (change)="onChangePagination($event)">
+                </adf-pagination>
             </mat-card-content>
         </mat-card>
     </div>

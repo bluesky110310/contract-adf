@@ -24,6 +24,7 @@ import { DocumentsComponent } from './documents/documents.component';
 import { AppLayoutComponent } from './app-layout/app-layout.component';
 import { FileViewComponent } from './file-view/file-view.component';
 import { ContractHomeComponent } from './contract-home/contract-home.component';
+import { ContractDetailComponent } from './contract-detail/contract-detail.component';
 
 export const appRoutes: Routes = [
   { path: 'files/:nodeId/view', component: FileViewComponent, canActivate: [AuthGuardEcm], outlet: 'overlay' },
@@ -38,6 +39,11 @@ export const appRoutes: Routes = [
       {
         path: 'contract/home',
         component: ContractHomeComponent,
+        canActivate: [AuthGuardEcm]
+      },
+      {
+        path: 'contract/:contractId/detail',
+        component: ContractDetailComponent,
         canActivate: [AuthGuardEcm]
       },
       {

@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ContractNewDialogComponent } from 'app/contract-new-dialog/contract-new-dialog.component';
-import { MinimalNode, QueryBody, ResultNode, ResultSetPaging } from '@alfresco/js-api';
-import { SearchService } from '@alfresco/adf-core';
+import { MinimalNode, Pagination, QueryBody, ResultNode, ResultSetPaging } from '@alfresco/js-api';
+import { DataRowEvent, DataTableComponent, PaginationModel, SearchService } from '@alfresco/adf-core';
 
 @Component({
   selector: 'app-contract-home',
@@ -20,6 +20,13 @@ export class ContractHomeComponent implements OnInit {
     { name: 'Kleen Construction Upgrade' }
   ]
 
+  pagination: Pagination = {
+    maxItems: 5,
+    skipCount: 0
+  }
+
+  sizes: Array<number> = [5, 10]
+
   isLoadingApproval: boolean = false
   isLoading: boolean = false
 
@@ -27,10 +34,7 @@ export class ContractHomeComponent implements OnInit {
     query: {
       query: "PATH:\"app:company_home/cm:Contracts/*\""
     },
-    paging: {
-      maxItems: 10,
-      skipCount: 0
-    },
+    paging: this.pagination,
     filterQueries: [
       { query: "TYPE:'cm:folder'" }
     ],
@@ -79,8 +83,7 @@ export class ContractHomeComponent implements OnInit {
   ngOnInit(): void {
     this.isLoadingApproval = true
 
-    let queryBody: QueryBody = this.defaultQueryBody
-    queryBody.paging.maxItems = 3
+    let queryBody: QueryBody = { ...this.defaultQueryBody, paging: { maxItems: 3 } }
 
     this.searchService.searchByQueryBody(queryBody).subscribe((rec: ResultSetPaging) => {
       let entries = rec.list.entries
@@ -111,12 +114,17 @@ export class ContractHomeComponent implements OnInit {
 
     this.isLoading = true
 
-    this.searchService.searchByQueryBody(this.defaultQueryBody).subscribe((rec: ResultSetPaging) => {
+    let queryBody: QueryBody = { ...this.defaultQueryBody, paging: { ...this.pagination } }
+
+    this.searchService.searchByQueryBody(queryBody).subscribe((rec: ResultSetPaging) => {
+      this.pagination = rec.list.pagination
+
       let entries = rec.list.entries
 
       for (let i = 0; i < entries.length; i++) {
         const entry: ResultNode = entries[i].entry
         this.rows.push({
+          id: entry.id,
           name: entry.name,
           status: 'in approval',
           created_by: entry.createdByUser.displayName,
@@ -126,6 +134,25 @@ export class ContractHomeComponent implements OnInit {
       }
     }, (error: any) => { console.log(error) }, () => {
       this.isLoading = false
+
+      this.defaultQueryBody.paging = this.pagination
     })
+  }
+
+  onShowDetail(event: DataRowEvent) {
+    const { id } = event.value.obj
+
+    this.router.navigate(['contract', id, 'detail'])
+    
+    // this.router.navigate(['/contract', id, 'detail']);
+  }
+
+  onChangePagination(event: PaginationModel) {
+    this.pagination = {
+      maxItems: event.maxItems,
+      skipCount: event.skipCount
+    }
+
+    this.onSearch()
   }
 }
